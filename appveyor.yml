@@ -1,46 +1,84 @@
 environment:
 
+  global:
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    #     # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    #         # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\build_tools\\appveyor\\run_with_env.cmd"
+    
   matrix:
-    - python : 27
-    - python : 27-x64
-    - python : 34
-    - python : 34-x64
-    - python : 35
-    - python : 35-x64
+    - PYTHON: "C:\\Python34_64"
+      PYTHON_VERSION: "3.4"
+      PYTHON_ARCH: "64"
+      CONDA_PY: "34"
+      CONDA_NPY: "19"
+
+    - PYTHON: "C:\\Python27_64"
+      PYTHON_VERSION: "2.7"
+      PYTHON_ARCH: "64"
+      CONDA_PY: "27"
+      CONDA_NPY: "110"
+
+    - PYTHON: "C:\\Python35_64"
+      PYTHON_VERSION: "3.5"
+      PYTHON_ARCH: "64"
+      CONDA_PY: "35"
+      CONDA_NPY: "111"
+
+# We always use a 64-bit machine, but can build x86 distributions
+# # with the PYTHON_ARCH variable (which is used by CMD_IN_ENV).
+platform:
+  - x64
+
+#     # all our python builds have to happen in tests_script...
+build: false
+
+init:
+  - "ECHO %PYTHON_VERSION% %PYTHON%"
 
 install:
+  # this installs the appropriate Miniconda (Py2/Py3, 32/64 bit)
+  # updates conda & installs: conda-build jinja2 anaconda-client
+  - powershell .\build_tools\appveyor\install.ps1
+  - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - echo "install"
+  - cd
+  - ls -ltr
 
-  - "SET PATH=C:\\Python%PYTHON%;c:\\Python%PYTHON%\\scripts;%PATH%"
-  - echo "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 > "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64/vcvars64.bat"
+  # this can conflict with git
+  - cmd: rmdir C:\cygwin /s /q
 
-  # Check that we have the expected version and architecture for Python
-  - python --version
-  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  # install our build environment
+  - cmd: conda config --set show_channel_urls true --set always_yes true --set changeps1 false
+  - cmd: conda update -q conda
+  - cmd: conda config --set ssl_verify false
 
-  # Install pip
-  - python -m pip install --upgrade pip
+  # add the pandas channel *before* defaults to have defaults take priority
+  - cmd: conda config --add channels uwmagellan
+  - cmd: conda config --remove channels defaults
+  - cmd: conda config --add channels defaults
+  - cmd: conda install anaconda-client
 
-  # Install the build and runtime dependencies of the project.
-  - pip install setuptools numpy six nose cython wheel
+  # this is now the downloaded conda...
+  - cmd: conda info -a
 
-  # Build the project
-  - python setup.py build_ext --inplace
+  # build em using the local source checkout in the correct windows env
+  - cmd: '%CMD_IN_ENV% conda build conda.recipe -q'
 
-build: false
+  # create our env
+  - cmd: conda create -q -n py_stringmatching python=%PYTHON_VERSION% nose
+  - cmd: activate py_stringmatching
+  - SET REQ=build_tools\requirements_dev.txt
+  - cmd: echo "installing requirements from %REQ%"
+  - cmd: conda install -n py_stringmatching -q --file=%REQ%
+  - ps: conda install -n py_stringmatching (conda build conda.recipe -q --output)
 
 test_script:
   # Nosetests take care of unit tests
-  - nosetests
-
-after_test:
-  - ver
-  - python setup.py bdist_wheel
-  - python setup.py bdist_wininst
-  - python setup.py bdist_msi
-
-artifacts:
-  # Archive the generated packages in the ci.appveyor.com build report.
-  - path: dist\*
+  - cd \
+  - cmd: activate py_stringmatching
+  - cmd: conda list
+  - cmd: nosetests
 
 on_success:
   - echo Build succesful!
