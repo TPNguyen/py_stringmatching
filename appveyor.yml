@@ -66,19 +66,23 @@ install:
   - cmd: '%CMD_IN_ENV% conda build conda.recipe -q'
 
   # create our env
-  - cmd: conda create -q -n py_stringmatching python=%PYTHON_VERSION% nose
-  - cmd: activate py_stringmatching
-  - SET REQ=build_tools\requirements_dev.txt
-  - cmd: echo "installing requirements from %REQ%"
-  - cmd: conda install -n py_stringmatching -q --file=%REQ%
-  - ps: conda install -n py_stringmatching (conda build conda.recipe -q --output)
+#  - cmd: conda create -q -n py_stringmatching python=%PYTHON_VERSION% nose
+#  - cmd: activate py_stringmatching
+#  - SET REQ=build_tools\requirements_dev.txt
+#  - cmd: echo "installing requirements from %REQ%"
+#  - cmd: conda install -n py_stringmatching -q --file=%REQ%
+#  - ps: conda install -n py_stringmatching (conda build conda.recipe -q --output)
 
-test_script:
+#test_script:
   # Nosetests take care of unit tests
-  - cd \
-  - cmd: activate py_stringmatching
-  - cmd: conda list
-  - cmd: nosetests
+#  - cd \
+#  - cmd: activate py_stringmatching
+#  - cmd: conda list
+#  - cmd: nosetests
+
+artifacts:
+  # Archive the generated packages in the ci.appveyor.com build report.
+  - path: %PYTHON%\conda-bld\win-64\*
 
 on_success:
   - echo Build succesful!
