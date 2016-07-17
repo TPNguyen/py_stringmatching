@@ -82,7 +82,7 @@ install:
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
-  - path: %PYTHON%\conda-bld\win-64\*
+  - path: '%PYTHON%\conda-bld\win-64\*'
 
 on_success:
   - echo Build succesful!
