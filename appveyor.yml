@@ -80,9 +80,11 @@ install:
 #  - cmd: conda list
 #  - cmd: nosetests
 
+  - python build_tools\move-conda-package.py conda.recipe
+
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
-  - path: '%PYTHON%\conda-bld\win-64\*'
+  - path: '*.tar.bz2'
 
 on_success:
   - echo Build succesful!
