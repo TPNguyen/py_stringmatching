@@ -24,6 +24,6 @@ The required dependencies to build the package are NumPy 1.7.0 or higher,
 Six, and a C or C++ compiler. For the development version, you will also need Cython.
 
 Platforms
-=========
+==========
 
 py_stringmatching has been tested on Linux, OS X and Windows.
