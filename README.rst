@@ -16,7 +16,7 @@ Important links
  * Mailing List: https://groups.google.com/forum/#!forum/py_stringmatching
  
 Dependencies
-============
+=============
 
 py_stringmatching has been tested on Python 2.7, Python 3.3, Python 3.4 and Python 3.5.
 
