@@ -69,7 +69,11 @@ if __name__ == "__main__":
     # specify extensions that need to be compiled
     extensions = [setuptools.Extension("py_stringmatching.similarity_measure.cython_levenshtein",
                                        ["py_stringmatching/similarity_measure/cython_levenshtein.c"],
-                                       include_dirs=[])]
+                                       include_dirs=[]),
+                  setuptools.Extension("py_stringmatching.similarity_measure.cython_jaccard",
+                                       ["py_stringmatching/similarity_measure/cython_jaccard.c"],
+                                       include_dirs=[])
+                 ]
  
     # find packages to be included. exclude benchmarks.
     packages = setuptools.find_packages(exclude=["benchmarks"])

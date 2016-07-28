@@ -74,5 +74,7 @@ results/
 # Project specific
 cythonize.dat
 
-garage/
+py_stringmatching/garage/
 cover/
+py_stringmatching/garage
+
