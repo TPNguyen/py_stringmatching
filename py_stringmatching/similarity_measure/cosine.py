@@ -1,6 +1,7 @@
 import math
 
 from py_stringmatching import utils
+from py_stringmatching.similarity_measure.cython_cosine import cosine
 from py_stringmatching.similarity_measure.token_similarity_measure import \
                                                     TokenSimilarityMeasure
 
@@ -49,22 +50,22 @@ class Cosine(TokenSimilarityMeasure):
         utils.sim_check_for_none(set1, set2)
         utils.sim_check_for_list_or_set_inputs(set1, set2)
 
-        # if exact match return 1.0
-        if utils.sim_check_for_exact_match(set1, set2):
-            return 1.0
-
-        # if one of the strings is empty return 0
-        if utils.sim_check_for_empty(set1, set2):
-            return 0
+        # # if exact match return 1.0
+        # if utils.sim_check_for_exact_match(set1, set2):
+        #     return 1.0
+        #
+        # # if one of the strings is empty return 0
+        # if utils.sim_check_for_empty(set1, set2):
+        #     return 0
 
         if not isinstance(set1, set):
             set1 = set(set1)
         if not isinstance(set2, set):
             set2 = set(set2)
 
-        return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) *
-                                          math.sqrt(float(len(set2))))
-
+        # return float(len(set1 & set2)) / (math.sqrt(float(len(set1))) *
+        #                                   math.sqrt(float(len(set2))))
+        return cosine(set1, set2)
     def get_sim_score(self, set1, set2):
         """Computes the normalized cosine similarity between two sets.
 

@@ -70,6 +70,11 @@ if __name__ == "__main__":
     extensions = [setuptools.Extension("py_stringmatching.similarity_measure.cython_levenshtein",
                                        ["py_stringmatching/similarity_measure/cython_levenshtein.c"],
                                        include_dirs=[]),
+                  setuptools.Extension(
+                      "py_stringmatching.similarity_measure.cython_cosine",
+                      ["py_stringmatching/similarity_measure/cython_cosine.c"],
+                      include_dirs=[]),
+
                   setuptools.Extension("py_stringmatching.similarity_measure.cython_jaccard",
                                        ["py_stringmatching/similarity_measure/cython_jaccard.c"],
                                        include_dirs=[])
