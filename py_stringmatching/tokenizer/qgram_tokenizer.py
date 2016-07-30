@@ -2,6 +2,7 @@ from six import string_types
 from six.moves import xrange
 
 from py_stringmatching import utils
+from py_stringmatching.tokenizer.cython_qgram_tokenizer import qgram_tok
 from py_stringmatching.tokenizer.definition_tokenizer import DefinitionTokenizer
 
 
@@ -95,17 +96,19 @@ class QgramTokenizer(DefinitionTokenizer):
         # If the padding flag is set to true, add q-1 "prefix_pad" characters
         # in front of the input string and  add q-1 "suffix_pad" characters at
         # the end of the input string.
-        if self.padding:
-            input_string = (self.prefix_pad * (self.qval - 1)) + input_string \
-                           + (self.suffix_pad * (self.qval - 1))
-
-        if len(input_string) < self.qval:
-            return qgram_list
-
-        qgram_list = [input_string[i:i + self.qval] for i in
-                      xrange(len(input_string) - (self.qval - 1))]
-        qgram_list = list(filter(None, qgram_list))
-
+        # if self.padding:
+        #     input_string = (self.prefix_pad * (self.qval - 1)) + input_string \
+        #                    + (self.suffix_pad * (self.qval - 1))
+        #
+        # if len(input_string) < self.qval:
+        #     return qgram_list
+        #
+        # qgram_list = [input_string[i:i + self.qval] for i in
+        #               xrange(len(input_string) - (self.qval - 1))]
+        # qgram_list = list(filter(None, qgram_list))
+        qgram_list = qgram_tok(input_string, self.qval, self.padding,
+                               self.prefix_pad,
+                               self.suffix_pad)
         if self.return_set:
             return utils.convert_bag_to_set(qgram_list)
 

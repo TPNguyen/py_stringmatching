@@ -4,6 +4,8 @@ import numpy as np
 
 from py_stringmatching import utils
 from six.moves import xrange
+from py_stringmatching.similarity_measure.cython_smith_waterman import \
+    smith_waterman
 from py_stringmatching.similarity_measure.sequence_similarity_measure import \
                                                     SequenceSimilarityMeasure
 
@@ -70,20 +72,21 @@ class SmithWaterman(SequenceSimilarityMeasure):
 
         utils.tok_check_for_string_input(string1, string2)
 
-        dist_mat = np.zeros((len(string1) + 1, len(string2) + 1),
-                            dtype=np.float)
-        max_value = 0
-        # Smith Waterman DP calculations
-        for i in xrange(1, len(string1) + 1):
-            for j in xrange(1, len(string2) + 1):
-                match = dist_mat[i - 1, j - 1] + self.sim_func(string1[i - 1],
-                                                               string2[j - 1])
-                delete = dist_mat[i - 1, j] - self.gap_cost
-                insert = dist_mat[i, j - 1] - self.gap_cost
-                dist_mat[i, j] = max(0, match, delete, insert)
-                max_value = max(max_value, dist_mat[i, j])
-
-        return max_value
+        # dist_mat = np.zeros((len(string1) + 1, len(string2) + 1),
+        #                     dtype=np.float)
+        # max_value = 0
+        # # Smith Waterman DP calculations
+        # for i in xrange(1, len(string1) + 1):
+        #     for j in xrange(1, len(string2) + 1):
+        #         match = dist_mat[i - 1, j - 1] + self.sim_func(string1[i - 1],
+        #                                                        string2[j - 1])
+        #         delete = dist_mat[i - 1, j] - self.gap_cost
+        #         insert = dist_mat[i, j - 1] - self.gap_cost
+        #         dist_mat[i, j] = max(0, match, delete, insert)
+        #         max_value = max(max_value, dist_mat[i, j])
+        #
+        # return max_value
+        return smith_waterman(string1, string2, self.gap_cost, self.sim_func)
 
     def get_gap_cost(self):
         """Get gap cost.

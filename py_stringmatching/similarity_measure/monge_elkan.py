@@ -1,5 +1,6 @@
 from py_stringmatching import utils
 from py_stringmatching.similarity_measure.jaro_winkler import JaroWinkler
+from py_stringmatching.similarity_measure.cython_monge_elkan import monge_elkan
 from py_stringmatching.similarity_measure.hybrid_similarity_measure import \
                                                     HybridSimilarityMeasure
 
@@ -61,26 +62,28 @@ class MongeElkan(HybridSimilarityMeasure):
         utils.sim_check_for_none(bag1, bag2)
         utils.sim_check_for_list_or_set_inputs(bag1, bag2)
 
-        # if exact match return 1.0
-        if utils.sim_check_for_exact_match(bag1, bag2):
-            return 1.0
+        # # if exact match return 1.0
+        # if utils.sim_check_for_exact_match(bag1, bag2):
+        #     return 1.0
+        #
+        # # if one of the strings is empty return 0
+        # if utils.sim_check_for_empty(bag1, bag2):
+        #     return 0
+        #
+        # # aggregated sum of all the max sim score of all the elements in bag1
+        # # with elements in bag2
+        # sum_of_maxes = 0
+        # for el1 in bag1:
+        #     max_sim = float('-inf')
+        #     for el2 in bag2:
+        #         max_sim = max(max_sim, self.sim_func(el1, el2))
+        #     sum_of_maxes += max_sim
+        #
+        # sim = float(sum_of_maxes) / float(len(bag1))
+        #
+        # return sim
+        return monge_elkan(bag1, bag2, self.sim_func, True)
 
-        # if one of the strings is empty return 0
-        if utils.sim_check_for_empty(bag1, bag2):
-            return 0
-
-        # aggregated sum of all the max sim score of all the elements in bag1
-        # with elements in bag2
-        sum_of_maxes = 0
-        for el1 in bag1:
-            max_sim = float('-inf')
-            for el2 in bag2:
-                max_sim = max(max_sim, self.sim_func(el1, el2))
-            sum_of_maxes += max_sim
-
-        sim = float(sum_of_maxes) / float(len(bag1))
-
-        return sim
 
     def get_sim_func(self):
         """Get the secondary similarity function.

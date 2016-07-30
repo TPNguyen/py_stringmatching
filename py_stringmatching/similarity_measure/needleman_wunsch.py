@@ -2,6 +2,8 @@ import numpy as np
 
 from py_stringmatching import utils
 from six.moves import xrange
+from py_stringmatching.similarity_measure.cython_needleman_wunsch import \
+    needleman_wunsch
 from py_stringmatching.similarity_measure.sequence_similarity_measure import \
                                                     SequenceSimilarityMeasure
 
@@ -69,27 +71,28 @@ class NeedlemanWunsch(SequenceSimilarityMeasure):
 
         utils.tok_check_for_string_input(string1, string2)
 
-        dist_mat = np.zeros((len(string1) + 1, len(string2) + 1),
-                            dtype=np.float)
-
-        # DP initialization
-        for i in xrange(len(string1) + 1):
-            dist_mat[i, 0] = -(i * self.gap_cost)
-
-        # DP initialization
-        for j in xrange(len(string2) + 1):
-            dist_mat[0, j] = -(j * self.gap_cost)
-
-        # Needleman-Wunsch DP calculation
-        for i in xrange(1, len(string1) + 1):
-            for j in xrange(1, len(string2) + 1):
-                match = dist_mat[i - 1, j - 1] + self.sim_func(string1[i - 1],
-                                                               string2[j - 1])
-                delete = dist_mat[i - 1, j] - self.gap_cost
-                insert = dist_mat[i, j - 1] - self.gap_cost
-                dist_mat[i, j] = max(match, delete, insert)
-
-        return dist_mat[dist_mat.shape[0] - 1, dist_mat.shape[1] - 1]
+        # dist_mat = np.zeros((len(string1) + 1, len(string2) + 1),
+        #                     dtype=np.float)
+        #
+        # # DP initialization
+        # for i in xrange(len(string1) + 1):
+        #     dist_mat[i, 0] = -(i * self.gap_cost)
+        #
+        # # DP initialization
+        # for j in xrange(len(string2) + 1):
+        #     dist_mat[0, j] = -(j * self.gap_cost)
+        #
+        # # Needleman-Wunsch DP calculation
+        # for i in xrange(1, len(string1) + 1):
+        #     for j in xrange(1, len(string2) + 1):
+        #         match = dist_mat[i - 1, j - 1] + self.sim_func(string1[i - 1],
+        #                                                        string2[j - 1])
+        #         delete = dist_mat[i - 1, j] - self.gap_cost
+        #         insert = dist_mat[i, j - 1] - self.gap_cost
+        #         dist_mat[i, j] = max(match, delete, insert)
+        #
+        # return dist_mat[dist_mat.shape[0] - 1, dist_mat.shape[1] - 1]
+        return needleman_wunsch(string1, string2, self.gap_cost, self.sim_func)
 
     def get_gap_cost(self):
         """Get gap cost.

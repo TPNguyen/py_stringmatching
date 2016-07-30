@@ -75,6 +75,48 @@ if __name__ == "__main__":
                       ["py_stringmatching/similarity_measure/cython_cosine.c"],
                       include_dirs=[]),
 
+                  setuptools.Extension(
+                      "py_stringmatching.similarity_measure.cython_jaro",
+                      ["py_stringmatching/similarity_measure/cython_jaro.c"],
+                      include_dirs=[]),
+
+                  setuptools.Extension(
+                      "py_stringmatching.similarity_measure.cython_jaro_winkler",
+                      ["py_stringmatching/similarity_measure/cython_jaro_winkler.c"
+                       ],
+                      include_dirs=[]),
+
+                  setuptools.Extension(
+                      "py_stringmatching.similarity_measure.cython_monge_elkan",
+                      [
+                          "py_stringmatching/similarity_measure/cython_monge_elkan.c"
+                          ],
+                      include_dirs=[]),
+
+                  setuptools.Extension(
+                      "py_stringmatching.similarity_measure"
+                      ".cython_needleman_wunsch",
+                      [
+                          "py_stringmatching/similarity_measure/cython_needleman_wunsch.c"
+                      ],
+                      include_dirs=[]),
+
+                  setuptools.Extension(
+                      "py_stringmatching.similarity_measure"
+                      ".cython_smith_waterman",
+                      [
+                          "py_stringmatching/similarity_measure/cython_smith_waterman.c"
+                      ],
+                      include_dirs=[]),
+
+                  setuptools.Extension(
+                      "py_stringmatching.tokenizer"
+                      ".cython_qgram_tokenizer",
+                      [
+                          "py_stringmatching/tokenizer/cython_qgram_tokenizer.c"
+                      ],
+                      include_dirs=[]),
+
                   setuptools.Extension("py_stringmatching.similarity_measure.cython_jaccard",
                                        ["py_stringmatching/similarity_measure/cython_jaccard.c"],
                                        include_dirs=[])

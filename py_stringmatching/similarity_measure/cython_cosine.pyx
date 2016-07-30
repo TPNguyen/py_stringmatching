@@ -8,9 +8,6 @@ cimport numpy as np
 import math
 
 
-
-cdef inline float int_min(float a, float b): return a if a <= b else b
-
 def cosine(s1, s2):
     cdef float len_set1 = len(s1)
     cdef float len_set2 = len(s2)
