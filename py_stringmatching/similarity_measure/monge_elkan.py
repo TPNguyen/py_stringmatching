@@ -82,7 +82,7 @@ class MongeElkan(HybridSimilarityMeasure):
         # sim = float(sum_of_maxes) / float(len(bag1))
         #
         # return sim
-        return monge_elkan(bag1, bag2, self.sim_func, True)
+        return monge_elkan(bag1, bag2, self.sim_func, False)
 
 
     def get_sim_func(self):
